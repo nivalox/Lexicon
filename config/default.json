@@ -1,0 +1,86 @@
+{
+  "variant": "american",
+  "seed": 1,
+  "search": {
+    "hashMB": 16,
+    "maxDepth": 64,
+    "algorithm": "pvs",
+    "aspiration": true,
+    "aspirationWindow": 40,
+    "killers": true,
+    "history": true,
+    "lmr": false,
+    "lmrMinDepth": 3,
+    "lmrMoveThreshold": 4,
+    "maxQuiescenceDepth": 24,
+    "extensions": {
+      "singleReply": true
+    },
+    "threads": 1
+  },
+  "evaluation": {
+    "tempo": 4,
+    "kingRatio": null,
+    "features": {
+      "material": {
+        "enabled": true,
+        "opening": 100,
+        "endgame": 100
+      },
+      "advancement": {
+        "enabled": true,
+        "opening": 3,
+        "endgame": 5
+      },
+      "center": {
+        "enabled": true,
+        "opening": 2,
+        "endgame": 1
+      },
+      "backRank": {
+        "enabled": true,
+        "opening": 8,
+        "endgame": 0
+      },
+      "mobility": {
+        "enabled": true,
+        "opening": 2,
+        "endgame": 4
+      },
+      "kingActivity": {
+        "enabled": true,
+        "opening": 3,
+        "endgame": 6
+      },
+      "diagonals": {
+        "enabled": true,
+        "opening": 0,
+        "endgame": 8
+      },
+      "formation": {
+        "enabled": true,
+        "opening": 3,
+        "endgame": 1
+      },
+      "promotionThreat": {
+        "enabled": true,
+        "opening": 10,
+        "endgame": 25
+      },
+      "endgame": {
+        "enabled": true,
+        "opening": 1,
+        "endgame": 1
+      }
+    }
+  },
+  "strength": {
+    "level": 9,
+    "useOpeningBook": true,
+    "useTablebases": true
+  },
+  "browser": {
+    "useWorker": true,
+    "workerUrl": null
+  }
+}

@@ -1,0 +1,27 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lexicon demo</title>
+<style>
+  :root { color-scheme: light dark; font-family: system-ui, sans-serif; }
+  body { max-width: 40rem; margin: 2rem auto; padding: 0 1rem; }
+  pre { background: color-mix(in srgb, currentColor 8%, transparent); padding: .75rem; overflow-x: auto; }
+</style>
+<h1>Lexicon</h1>
+<p>Serve this repo over HTTP (module workers do not run from <code>file://</code>): <code>npx http-server .</code> then open <code>/examples/browser.html</code>.</p>
+<button id="go">Analyze start position</button> <button id="stop">Stop</button>
+<pre id="out">idle</pre>
+<script type="module">
+  import { createEngine } from '../src/adapters/browser/api.js';
+  const out = document.getElementById('out');
+  const engine = await createEngine({ options: { variant: 'american' } });  // runs in a Web Worker
+  document.getElementById('go').onclick = async () => {
+    out.textContent = 'thinking…';
+    const r = await engine.analyze({
+      position: 'startpos', depth: 14, movetime: 3000,
+      onInfo: (i) => (out.textContent = `depth ${i.depth}  score ${i.score}  nodes ${i.nodes}\n${i.pv.join(' ')}`),
+    });
+    out.textContent = `best move ${r.bestMove}\nscore ${r.score}  depth ${r.depth}  nps ${r.nps}\npv ${r.principalVariation.join(' ')}`;
+  };
+  document.getElementById('stop').onclick = () => engine.stop();
+</script>

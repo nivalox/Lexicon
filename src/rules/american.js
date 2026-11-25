@@ -1,0 +1,7 @@
+export const american = {
+  id: 'american', name: 'American Checkers / English Draughts', size: 8, startRows: 3,
+  firstMove: 'black', menCaptureBackward: false, flyingKings: false, mandatoryCapture: true,
+  majorityCapture: false, promotionDuringCapture: 'ends', capturedRemovedAfterSequence: true,
+  noProgressPlies: 80, kingsOnlyPlies: 0, repetitionCount: 3, notation: 'numeric', verified: true,
+  notes: 'Perft from the start position matches published counts (7, 49, 302, 1469, 7361, 36768, 179740).',
+};

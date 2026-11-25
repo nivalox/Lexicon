@@ -1,0 +1,25 @@
+{
+  "name": "lexicon-checkers",
+  "version": "0.1.0",
+  "description": "Lexicon — a modular checkers / draughts engine in JavaScript",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./browser": "./src/adapters/browser/api.js",
+    "./worker": "./src/adapters/browser/worker.js"
+  },
+  "bin": { "lexicon": "bin/lexicon.js" },
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "test": "node scripts/test.js",
+    "perft": "node benchmarks/perft.js",
+    "bench": "node benchmarks/search.js",
+    "selfplay": "node benchmarks/selfplay.js",
+    "export-json": "node scripts/export-json.js",
+    "build": "node scripts/build.js",
+    "start": "node bin/lexicon.js"
+  },
+  "devDependencies": { "esbuild": "^0.21.0" },
+  "license": "MIT"
+}

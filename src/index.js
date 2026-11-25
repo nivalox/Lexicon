@@ -1,0 +1,17 @@
+export { LexiconEngine } from './core/engine.js';
+export { Position } from './core/position.js';
+export { Move } from './core/move.js';
+export { perft, divide } from './core/perft.js';
+export { getRuleset, registerVariant, listVariants } from './rules/variants.js';
+export { createRuleset, validateRuleset } from './rules/ruleset.js';
+export { Evaluator } from './evaluation/evaluate.js';
+export { Searcher } from './search/search.js';
+export { TranspositionTable } from './search/transposition-table.js';
+export { StrengthManager } from './strength/strength-manager.js';
+export { STRENGTH_PRESETS } from './strength/presets.js';
+export { OpeningBook } from './knowledge/opening-book.js';
+export { Tablebase, NullTablebase, MapTablebase, canonicalKey } from './knowledge/tablebases.js';
+export { UciProtocol, createJSONHandler } from './protocol/protocol.js';
+export { DEFAULT_CONFIG } from './config/defaults.js';
+export { validateConfig, deepMerge } from './utils/validation.js';
+export { ENGINE_NAME, VERSION, BLACK, WHITE } from './utils/constants.js';

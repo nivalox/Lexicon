@@ -1,0 +1,17 @@
+{
+  "hashMB": 16,
+  "maxDepth": 64,
+  "algorithm": "pvs",
+  "aspiration": true,
+  "aspirationWindow": 40,
+  "killers": true,
+  "history": true,
+  "lmr": false,
+  "lmrMinDepth": 3,
+  "lmrMoveThreshold": 4,
+  "maxQuiescenceDepth": 24,
+  "extensions": {
+    "singleReply": true
+  },
+  "threads": 1
+}

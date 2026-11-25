@@ -1,0 +1,7 @@
+export const russian = {
+  id: 'russian', name: 'Russian Draughts (8x8)', size: 8, startRows: 3,
+  firstMove: 'white', menCaptureBackward: true, flyingKings: true, mandatoryCapture: true,
+  majorityCapture: false, promotionDuringCapture: 'continuesAsKing', capturedRemovedAfterSequence: true,
+  noProgressPlies: 0, kingsOnlyPlies: 30, repetitionCount: 3, notation: 'numeric', verified: false,
+  notes: 'Draw-rule parameters are approximate. Uses numeric (not a1-h8) square notation.',
+};

@@ -1,0 +1,17 @@
+/**
+ * Strength presets. These are CONFIGURATION PRESETS, not guaranteed Elo ratings.
+ * evalNoise: deterministic per-position noise (cp) added to leaf evaluations.
+ * candidates/margin/temperature: root moves within `margin` cp of the best are
+ *   sampled with weight exp(-loss/temperature). Moves that throw away a forced win are never sampled.
+ */
+export const STRENGTH_PRESETS = {
+  1: { name: 'Beginner',     maxDepth: 2,  timeLimit: 200,  nodeLimit: 3000,  evalNoise: 60, candidates: 5, margin: 150, temperature: 60, bookMaxPlies: 4,  useOpeningBook: true },
+  2: { name: 'Novice',       maxDepth: 3,  timeLimit: 300,  nodeLimit: 8000,  evalNoise: 40, candidates: 5, margin: 110, temperature: 45, bookMaxPlies: 6,  useOpeningBook: true },
+  3: { name: 'Casual',       maxDepth: 4,  timeLimit: 500,  nodeLimit: 30000, evalNoise: 30, candidates: 4, margin: 80,  temperature: 35, bookMaxPlies: 8,  useOpeningBook: true },
+  4: { name: 'Intermediate', maxDepth: 6,  timeLimit: 800,  nodeLimit: 0,     evalNoise: 20, candidates: 4, margin: 55,  temperature: 25, bookMaxPlies: 10, useOpeningBook: true },
+  5: { name: 'Advanced',     maxDepth: 8,  timeLimit: 1200, nodeLimit: 0,     evalNoise: 10, candidates: 3, margin: 35,  temperature: 15, bookMaxPlies: 12, useOpeningBook: true },
+  6: { name: 'Expert',       maxDepth: 10, timeLimit: 2000, nodeLimit: 0,     evalNoise: 5,  candidates: 3, margin: 20,  temperature: 10, bookMaxPlies: 16, useOpeningBook: true },
+  7: { name: 'Master',       maxDepth: 14, timeLimit: 3000, nodeLimit: 0,     evalNoise: 0,  candidates: 2, margin: 10,  temperature: 6,  bookMaxPlies: 24, useOpeningBook: true },
+  8: { name: 'Tournament',   maxDepth: 24, timeLimit: 4000, nodeLimit: 0,     evalNoise: 0,  candidates: 1, margin: 0,   temperature: 1,  bookMaxPlies: 99, useOpeningBook: true },
+  9: { name: 'Maximum',      maxDepth: 40, timeLimit: 5000, nodeLimit: 0,     evalNoise: 0,  candidates: 1, margin: 0,   temperature: 1,  bookMaxPlies: 99, useOpeningBook: true },
+};
