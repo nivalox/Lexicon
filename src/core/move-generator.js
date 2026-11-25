@@ -4,8 +4,11 @@ import { DIRS_ALL, DIRS_DOWN, DIRS_UP } from './board.js';
 
 /**
  * Legal move generation, driven entirely by the position's ruleset.
- * Captured pieces stay on the board (as blocking markers) until a sequence ends,
- * so no piece can be jumped twice and a mover may pass back through its origin.
+ * - mandatoryCapture: when false, quiet moves are legal even if a capture exists.
+ * - stopMultiJumpEarly: when true, a capture sequence may end after any jump.
+ * - capturedRemovedAfterSequence: true  -> captured pieces stay (as blocking markers) until the sequence ends;
+ *                                 false -> they vanish immediately, so later jumps can pass through their squares.
+ * Either way no piece is jumped twice, and a mover may pass back through its own origin square.
  */
 export function generateMoves(pos) {
   const { board, turn, rules, geo } = pos;
@@ -51,6 +54,8 @@ function genQuiet(pos, out) {
 function genCaptures(pos, start, piece, out) {
   const b = pos.board, geo = pos.geo, NEXT = geo.NEXT, rowOf = geo.rowOf, rules = pos.rules;
   const flying = rules.flyingKings, mode = rules.promotionDuringCapture;
+  const earlyStop = rules.stopMultiJumpEarly;                 // every prefix of a sequence is a legal move
+  const captured = rules.capturedRemovedAfterSequence ? CAPTURED : 0; // 0 = taken pieces vanish at once
   const startKing = piece === 2 || piece === -2;
   const kingRow = piece > 0 ? geo.size - 1 : 0;
   const manDirs = rules.menCaptureBackward ? DIRS_ALL : piece > 0 ? DIRS_DOWN : DIRS_UP;
@@ -92,26 +97,39 @@ function genCaptures(pos, start, piece, out) {
       let L = NEXT[s * 4 + d];
       if (L < 0 || b[L] !== 0) continue;
 
-      b[s] = CAPTURED; caps.push(s); capP.push(mp);
+      b[s] = captured; caps.push(s); capP.push(mp);
 
       const landings = [];
       if (isKing && flying) { while (L >= 0 && b[L] === 0) { landings.push(L); L = NEXT[L * 4 + d]; } }
       else landings.push(L);
 
-      // A flying king that can keep capturing from some landing square must land on one of those.
-      let continued = false;
-      const terms = [];
-      for (let j = 0; j < landings.length; j++) {
-        const L2 = landings[j];
-        const promo = !isKing && rowOf[L2] === kingRow;
-        if (promo && mode === 'ends') { terms.push(L2, true); continue; }
-        const nk = isKing || (promo && mode === 'continuesAsKing');
-        if (canCapture(L2, nk)) {
-          continued = true;
-          path.push(L2); dfs(L2, nk); path.pop();
-        } else terms.push(L2, nk);
+      if (earlyStop) {
+        // The mover may stop on any landing square, so every landing is a move of its own,
+        // and we also keep going from the landings where a further capture exists.
+        for (let j = 0; j < landings.length; j++) {
+          const L2 = landings[j];
+          const promo = !isKing && rowOf[L2] === kingRow;
+          if (promo && mode === 'ends') { record(L2, true); continue; }
+          const nk = isKing || (promo && mode === 'continuesAsKing');
+          record(L2, nk);
+          if (canCapture(L2, nk)) { path.push(L2); dfs(L2, nk); path.pop(); }
+        }
+      } else {
+        // A flying king that can keep capturing from some landing square must land on one of those.
+        let continued = false;
+        const terms = [];
+        for (let j = 0; j < landings.length; j++) {
+          const L2 = landings[j];
+          const promo = !isKing && rowOf[L2] === kingRow;
+          if (promo && mode === 'ends') { terms.push(L2, true); continue; }
+          const nk = isKing || (promo && mode === 'continuesAsKing');
+          if (canCapture(L2, nk)) {
+            continued = true;
+            path.push(L2); dfs(L2, nk); path.pop();
+          } else terms.push(L2, nk);
+        }
+        if (!continued) for (let j = 0; j < terms.length; j += 2) record(terms[j], terms[j + 1]);
       }
-      if (!continued) for (let j = 0; j < terms.length; j += 2) record(terms[j], terms[j + 1]);
 
       b[s] = mp; caps.pop(); capP.pop();
     }

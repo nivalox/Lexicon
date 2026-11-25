@@ -217,8 +217,8 @@ export class Searcher {
   }
 
   /**
-   * Checkers quiescence: captures are mandatory, so there is no "stand pat".
-   * We keep searching until the side to move has no capture available.
+   * Checkers quiescence. With mandatory capture there is no "stand pat": we keep searching until the
+   * side to move has no capture. With optional capture (forceJumps=false) the static score is a floor.
    */
   _quiesce(moves, alpha, beta, ply, qd) {
     const pos = this.pos;
@@ -228,8 +228,16 @@ export class Searcher {
     if (ply > this.selDepth) this.selDepth = ply;
     if (qd >= this.cfg.maxQuiescenceDepth || ply >= MAX_PLY - 2) return this.ev.evaluate(pos);
 
-    moves.sort((a, b) => b.caps.length - a.caps.length);
     let best = -INF;
+    if (!pos.rules.mandatoryCapture) {
+      // Captures are optional, so standing pat is legal: search captures only, with the static score as a floor.
+      const stand = this.ev.evaluate(pos);
+      if (stand >= beta) return stand;
+      if (stand > alpha) alpha = stand;
+      best = stand;
+      moves = moves.filter((m) => m.caps.length);
+    }
+    moves.sort((a, b) => b.caps.length - a.caps.length);
     for (let i = 0; i < moves.length; i++) {
       const m = moves[i];
       pos.make(m);

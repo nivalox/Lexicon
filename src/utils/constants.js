@@ -1,5 +1,5 @@
 export const ENGINE_NAME = 'Lexicon';
-export const VERSION = '0.1.0';
+export const VERSION = '0.2.0';
 
 export const BLACK = 1;   // Black men/kings are +1/+2. Black starts on the top rows and moves "down".
 export const WHITE = -1;  // White men/kings are -1/-2. White starts on the bottom rows and moves "up".

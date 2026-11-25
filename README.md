@@ -49,9 +49,27 @@ const e = new LexiconEngine({ variant: 'mini6' });
 ```
 
 Ruleset fields (see `src/rules/ruleset.js` and `rules/*.json`): `size`, `startRows`, `firstMove`, `menCaptureBackward`,
-`flyingKings`, `mandatoryCapture`, `majorityCapture`, `promotionDuringCapture` (`ends` | `continuesAsKing` | `continuesAsMan`),
-`noProgressPlies`, `kingsOnlyPlies`, `repetitionCount`. Boards up to 10x10 are supported. Only rules where captured pieces
-are removed *after* the sequence (all five profiles) are implemented; the Turkish strike is rejected by validation.
+`flyingKings`, `mandatoryCapture`, `stopMultiJumpEarly`, `majorityCapture`, `promotionDuringCapture`
+(`ends` | `continuesAsKing` | `continuesAsMan`), `capturedRemovedAfterSequence`, `noProgressPlies`, `kingsOnlyPlies`,
+`repetitionCount`. Boards up to 10x10 are supported.
+
+### Capture options
+
+| Option | Values | Default (all five built-in profiles) |
+|---|---|---|
+| `mandatoryCapture` (alias `forceJumps`) | `true`: a capture must be played. `false`: captures are optional and quiet moves are legal even when a capture exists | `true` |
+| `stopMultiJumpEarly` | `true`: a multi-jump may end after any jump, so every prefix of a sequence is a legal move. Only allowed when `mandatoryCapture` is `false` | `false` |
+| `capturedRemovedAfterSequence` (alias `capturedPiecesBlock`) | `true`: captured pieces stay on the board and block until the sequence ends. `false`: they vanish immediately and later jumps may pass through their squares | `true` |
+
+Invalid combinations are rejected with a reason: `stopMultiJumpEarly` without `mandatoryCapture: false`, `majorityCapture` with
+optional captures, or an alias that disagrees with its canonical field. In every mode a piece is never jumped twice, and the search
+adapts: with optional captures the quiescence search may "stand pat" instead of being forced to keep capturing.
+
+```js
+const e = new LexiconEngine({ variant: { id: 'my-rules', size: 8, startRows: 3,
+  forceJumps: false, stopMultiJumpEarly: true, capturedPiecesBlock: false } });   // registered under its id
+// or over JSON/worker: {"type":"registerVariant","ruleset":{...}} then setOption Variant
+```
 
 ## Strength
 
@@ -105,7 +123,7 @@ bitboard would be faster for 8x8 only and was deliberately not used so every var
 
 ## Testing & benchmarking
 
-`npm test` covers movement/capture rules per variant, perft (American 1–7 and International 1–5 match published counts),
+`npm test` covers movement/capture rules per variant (including the optional-capture, early-stop and non-blocking-capture modes), perft (American 1–7 and International 1–5 match published counts),
 FEN/hash/undo round trips over random games for every variant, search correctness (PVS ≡ alpha-beta, mirror symmetry,
 mate finding, stop/time/node limits), evaluation symmetry, strength, book/tablebase, both protocols and the adapters.
 Self-play (`benchmarks/selfplay.js`) plays colour-swapped pairs from seeded openings and reports a 95% interval; do not claim
@@ -123,4 +141,4 @@ Not done / caveats:
 - **No opening data and no endgame data are shipped.** The book/tablebase code paths are tested with synthetic data only; no endgame database generator exists yet.
 - Single-threaded only (`search.threads` must be 1). Late Move Reductions are implemented but unvalidated and off by default.
 - The browser worker, the extension adapter against a real browser, and `npm run build` have not been exercised in a real browser/with esbuild here; the adapters are covered by Node tests with fakes.
-- Not implemented: Turkish strike, incremental evaluation, king-vs-king theory, book/eval auto-tuning, a GUI.
+- Not implemented: incremental evaluation, king-vs-king theory, book/eval auto-tuning, a GUI.

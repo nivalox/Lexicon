@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.0
+- `mandatoryCapture` (alias `forceJumps`) is now fully supported when `false`, in move generation and in search/quiescence.
+- New `stopMultiJumpEarly`: a multi-jump may end after any capture (requires optional captures).
+- `capturedRemovedAfterSequence` / `capturedPiecesBlock` can now be `false`: captured pieces vanish immediately instead of blocking.
+- Ruleset validation rejects incompatible combinations; `LexiconEngine({ variant: {…definition…} })` and the JSON `registerVariant` request register custom rulesets.
+- Diagnostics: `forcedCapture` is only true when captures are mandatory; new `captureAvailable`.
+
 ## 0.1.0
 - Rule-driven move generation for American, International, Russian, Brazilian and Pool profiles, plus custom rulesets.
 - Position with incremental Zobrist hashing, FEN-like serialization, make/unmake, draw rules.

@@ -2,7 +2,7 @@ import { ENGINE_NAME, VERSION, MATE, MATE_BOUND } from '../utils/constants.js';
 import { createRng } from '../utils/rng.js';
 import { DEFAULT_CONFIG } from '../config/defaults.js';
 import { deepMerge, validateConfig } from '../utils/validation.js';
-import { getRuleset } from '../rules/variants.js';
+import { getRuleset, registerVariant } from '../rules/variants.js';
 import { Position } from './position.js';
 import { perft, divide } from './perft.js';
 import { Evaluator } from '../evaluation/evaluate.js';
@@ -43,7 +43,8 @@ function coerce(v) {
 export class LexiconEngine {
   constructor(options = {}) {
     this.config = deepMerge(DEFAULT_CONFIG, options.config || {});
-    if (options.variant) this.config.variant = options.variant;
+    // `variant` may be an id or a ruleset definition; definitions are registered under their id.
+    if (options.variant) this.config.variant = typeof options.variant === 'object' ? registerVariant(options.variant).id : options.variant;
     const errs = validateConfig(this.config);
     if (errs.length) throw new Error(`Invalid configuration: ${errs.join('; ')}`);
     this.knowledge = new PositionKnowledge({ book: options.book ?? null, tablebase: options.tablebase ?? new NullTablebase() });

@@ -1,3 +1,5 @@
+import { registerVariant } from '../rules/variants.js';
+
 /**
  * JSON request/response protocol. One handler serves node stdio, Web Workers and extension messaging.
  *   {"type":"analyze","position":"startpos","depth":20,"timeLimit":3000}
@@ -15,6 +17,7 @@ export function createJSONHandler(engine) {
             if (emit) opts.onInfo = (info) => emit({ type: 'info', ...info });
             return await engine.analyze(opts);
           }
+          case 'registerVariant': return { type: 'variant', id: registerVariant(req.ruleset).id };
           case 'setPosition': return { type: 'position', ...engine.setPosition(req.position, req.moves || []) };
           case 'legalMoves': return { type: 'legalMoves', moves: engine.getLegalMoves() };
           case 'makeMove': return { type: 'move', ...engine.makeMove(req.move) };

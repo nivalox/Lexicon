@@ -7,6 +7,7 @@
   "menCaptureBackward": false,
   "flyingKings": false,
   "mandatoryCapture": true,
+  "stopMultiJumpEarly": false,
   "majorityCapture": false,
   "promotionDuringCapture": "ends",
   "capturedRemovedAfterSequence": true,
